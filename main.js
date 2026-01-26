@@ -12,7 +12,7 @@ const glados = async () => {
       const action = await fetch('https://glados.cloud/api/user/checkin', {
         method: 'POST',
         headers: { ...common, 'content-type': 'application/json' },
-        body: '{"token":"glados.one"}',
+        body: '{"token":"glados.cloud"}',
       }).then((r) => r.json())
       if (action?.code) throw new Error(action?.message)
       const status = await fetch('https://glados.cloud/api/user/status', {
@@ -66,6 +66,19 @@ const notify = async (notice) => {
             title: notice[0],
             content: notice.join('<br>'),
             template: 'markdown',
+          }),
+        })
+      } else if (option.startsWith('qyweixin:')) {
+        const qyweixinToken = option.split(':')[1]
+        const qyweixinNotifyRebotUrl = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=' + qyweixinToken;
+        await fetch(qyweixinNotifyRebotUrl, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            msgtype: 'markdown',
+            markdown: {
+                content: notice.join('<br>')
+            }
           }),
         })
       } else {
