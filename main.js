@@ -103,5 +103,5 @@ const notify = async (notice) => {
 const main = async () => {
   await notify(await glados())
 }
-
+//
 main()
